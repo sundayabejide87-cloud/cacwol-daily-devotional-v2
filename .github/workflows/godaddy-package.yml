@@ -1,0 +1,32 @@
+name: Build CACWOL Devotional for GoDaddy
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-for-godaddy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install
+      - name: Build production website
+        run: npm run build
+      - name: Upload GoDaddy-ready site files
+        uses: actions/upload-artifact@v4
+        with:
+          name: cacwol-godaddy-site
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
